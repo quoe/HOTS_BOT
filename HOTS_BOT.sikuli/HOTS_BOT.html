@@ -1,0 +1,676 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }  
+         
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>HOTS_BOT.sikuli\HOTS_BOT.sikuli</h2> <a href="HOTS_BOT.sikuli\HOTS_BOT.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="kw">from</span> datetime <span class="kw">import</span> datetime
+<span class="kw">import</span> shutil
+<span class="kw">import</span> random
+<span class="cmt">#from sys import argv
+</span><span class="cmt">#HOTS = App.open("E:\Heroes of the Storm\Support64\HeroesSwitcher_x64.exe")
+</span><span class="cmt">#HOTS.focus()
+</span>Settings.MoveMouseDelay = <span class="dig">0.02</span>
+Settings.LogTime = False
+Settings.UserLogs = False
+Settings.UserLogTime = False
+LogInPass = <span class="str">"LogInPass"</span>
+timeWait = <span class="dig">60</span>
+LoadGameWait = <span class="dig">300</span>
+sleepTime = <span class="dig">7.7</span>
+WhileRepeat = <span class="dig">0</span>
+GameCount = <span class="dig">0</span>
+CurrentMap = <span class="str">"Карта не определена"</span> <span class="cmt">#Текущая карта</span>
+LogFilePath = <span class="str">"D:\\"</span>
+ScreenshotFilePath = <span class="str">"D:/"</span>
+LogFileName = <span class="str">"Sikuli_HOTS_Log_"</span> + datetime.strftime(datetime.now(), <span class="str">"%Y.%m.%d %H_%M_%S"</span>) + <span class="str">".txt"</span>
+log = file(LogFilePath + LogFileName, <span class="str">"w"</span>)
+defLoc_x = <span class="dig">521</span> <span class="cmt">#Нажатие по умолчанию в центр окна HOTS</span>
+defLoc_y = <span class="dig">403</span>
+defLoc_dx = <span class="dig">10</span>
+defLoc_dy = <span class="dig">10</span>
+defMidLoc_x = <span class="dig">881</span> <span class="cmt">#Нажатие по умолчанию в центр карты</span>
+defMidLoc_y = <span class="dig">643</span>
+defMidLoc_dx = <span class="dig">10</span>
+defMidLoc_dy = <span class="dig">10</span>
+
+Map1 = <span class="str">"Бухта Черносерда"</span>
+Map2 = <span class="str">"Драконий край"</span>
+Map3 = <span class="str">"Проклятая лощина"</span>
+Map4 = <span class="str">"Призрачные копи"</span>
+Map5 = <span class="str">"Сад ужасов"</span>
+Map6 = <span class="str">"Небесный храм"</span>
+Map7 = <span class="str">"Гробница королевы пауков"</span>
+Map8 = <span class="str">"Вечная битва"</span>
+Map9 = <span class="str">"Осквернённые святилища"</span>
+Map10 = <span class="str">"Башни Рока"</span>
+
+<span class="kw">def</span> latinizator(letter):
+    legend = {
+    <span class="cmt">#' ':'_',</span>
+    <span class="cmt">#',':'',</span>
+    <span class="str">'а'</span>:<span class="str">'a'</span>,
+    <span class="str">'б'</span>:<span class="str">'b'</span>,
+    <span class="str">'в'</span>:<span class="str">'v'</span>,
+    <span class="str">'г'</span>:<span class="str">'g'</span>,
+    <span class="str">'д'</span>:<span class="str">'d'</span>,
+    <span class="str">'е'</span>:<span class="str">'e'</span>,
+    <span class="str">'ё'</span>:<span class="str">'yo'</span>,
+    <span class="str">'ж'</span>:<span class="str">'zh'</span>,
+    <span class="str">'з'</span>:<span class="str">'z'</span>,
+    <span class="str">'и'</span>:<span class="str">'i'</span>,
+    <span class="str">'й'</span>:<span class="str">'y'</span>,
+    <span class="str">'к'</span>:<span class="str">'k'</span>,
+    <span class="str">'л'</span>:<span class="str">'l'</span>,
+    <span class="str">'м'</span>:<span class="str">'m'</span>,
+    <span class="str">'н'</span>:<span class="str">'n'</span>,
+    <span class="str">'о'</span>:<span class="str">'o'</span>,
+    <span class="str">'п'</span>:<span class="str">'p'</span>,
+    <span class="str">'р'</span>:<span class="str">'r'</span>,
+    <span class="str">'с'</span>:<span class="str">'s'</span>,
+    <span class="str">'т'</span>:<span class="str">'t'</span>,
+    <span class="str">'у'</span>:<span class="str">'u'</span>,
+    <span class="str">'ф'</span>:<span class="str">'f'</span>,
+    <span class="str">'х'</span>:<span class="str">'h'</span>,
+    <span class="str">'ц'</span>:<span class="str">'c'</span>,
+    <span class="str">'ч'</span>:<span class="str">'ch'</span>,
+    <span class="str">'ш'</span>:<span class="str">'sh'</span>,
+    <span class="str">'щ'</span>:<span class="str">'shch'</span>,
+    <span class="str">'ъ'</span>:<span class="str">'y'</span>,
+    <span class="str">'ы'</span>:<span class="str">'y'</span>,
+    <span class="str">'ь'</span>:<span class="str">"'"</span>,
+    <span class="str">'э'</span>:<span class="str">'e'</span>,
+    <span class="str">'ю'</span>:<span class="str">'yu'</span>,
+    <span class="str">'я'</span>:<span class="str">'ya'</span>,
+
+    <span class="str">'А'</span>:<span class="str">'A'</span>,
+    <span class="str">'Б'</span>:<span class="str">'B'</span>,
+    <span class="str">'В'</span>:<span class="str">'V'</span>,
+    <span class="str">'Г'</span>:<span class="str">'G'</span>,
+    <span class="str">'Д'</span>:<span class="str">'D'</span>,
+    <span class="str">'Е'</span>:<span class="str">'E'</span>,
+    <span class="str">'Ё'</span>:<span class="str">'Yo'</span>,
+    <span class="str">'Ж'</span>:<span class="str">'Zh'</span>,
+    <span class="str">'З'</span>:<span class="str">'Z'</span>,
+    <span class="str">'И'</span>:<span class="str">'I'</span>,
+    <span class="str">'Й'</span>:<span class="str">'Y'</span>,
+    <span class="str">'К'</span>:<span class="str">'K'</span>,
+    <span class="str">'Л'</span>:<span class="str">'L'</span>,
+    <span class="str">'М'</span>:<span class="str">'M'</span>,
+    <span class="str">'Н'</span>:<span class="str">'N'</span>,
+    <span class="str">'О'</span>:<span class="str">'O'</span>,
+    <span class="str">'П'</span>:<span class="str">'P'</span>,
+    <span class="str">'Р'</span>:<span class="str">'R'</span>,
+    <span class="str">'С'</span>:<span class="str">'S'</span>,
+    <span class="str">'Т'</span>:<span class="str">'T'</span>,
+    <span class="str">'У'</span>:<span class="str">'U'</span>,
+    <span class="str">'Ф'</span>:<span class="str">'F'</span>,
+    <span class="str">'Х'</span>:<span class="str">'H'</span>,
+    <span class="str">'Ц'</span>:<span class="str">'Ts'</span>,
+    <span class="str">'Ч'</span>:<span class="str">'Ch'</span>,
+    <span class="str">'Ш'</span>:<span class="str">'Sh'</span>,
+    <span class="str">'Щ'</span>:<span class="str">'Shch'</span>,
+    <span class="str">'Ъ'</span>:<span class="str">'Y'</span>,
+    <span class="str">'Ы'</span>:<span class="str">'Y'</span>,
+    <span class="str">'Ь'</span>:<span class="str">"'"</span>,
+    <span class="str">'Э'</span>:<span class="str">'E'</span>,
+    <span class="str">'Ю'</span>:<span class="str">'Yu'</span>,
+    <span class="str">'Я'</span>:<span class="str">'Ya'</span>,
+    }
+    <span class="kw">for</span> i, j <span class="kw">in</span> legend.items():
+        letter = letter.replace(i, j)
+    <span class="kw">return</span> letter
+
+<span class="kw">def</span> WriteLog(t):
+    nl = <span class="str">"\n"</span> <span class="cmt"># new line character</span>
+    log = open(LogFilePath + LogFileName, <span class="str">"a"</span>)
+    TD = datetime.strftime(datetime.now(), <span class="str">"%Y.%m.%d %H:%M:%S"</span>) + <span class="str">"\t"</span>
+    log.write(TD + t + nl)
+    log.close()
+    <span class="kw">print</span>(TD + latinizator(t))
+    <span class="cmt">#Debug.user(TD + latinizator(t));
+</span>
+<span class="kw">def</span> randomClick(image, max_dx, max_dy):
+    dx = random.randrange(-max_dx, max_dx)
+    dy = random.randrange(-max_dy, max_dy)
+    <span class="skw">click</span>(image.targetOffset(dx , dy))
+
+<span class="kw">def</span> randomLocationClick(x, y, max_dx, max_dy):
+    dx = random.randrange(-max_dx, max_dx)
+    dy = random.randrange(-max_dy, max_dy)
+    <span class="skw">click</span>(Location(x + dx, y + dy))
+
+<span class="kw">def</span> randomLocationRightClick(x, y, max_dx, max_dy):
+    dx = random.randrange(-max_dx, max_dx)
+    dy = random.randrange(-max_dy, max_dy)
+    <span class="skw">rightClick</span>(Location(x + dx, y + dy))
+
+<span class="kw">def</span> randomRegionClick(Reg, max_dx, max_dy):
+    randomLocationClick(round(Reg.getW()/<span class="dig">2</span>), round(Reg.getH()/<span class="dig">2</span>), max_dx, max_dy)
+
+<span class="kw">def</span> KeyPress(key):
+    keyDown(key)
+    WriteLog(<span class="str">"Нажата кнопка "</span> + key)
+    keyUp(key)
+    WriteLog(<span class="str">"Отпущена кнопка "</span> + key)
+
+<span class="kw">def</span> UseSkill(Reg, coord, base_x, base_y):
+    baseOffset_x = base_x <span class="cmt">#28</span>
+    baseOffset_y = base_y <span class="cmt">#68</span>
+    max_dx = <span class="dig">20</span>
+    max_dy = <span class="dig">30</span>
+    dx = random.randrange(-max_dx, max_dx)
+    dy = random.randrange(-max_dy, max_dy)
+    WriteLog(<span class="str">"Начало использования способностей"</span>)
+    KeyPress(<span class="str">"q"</span>)
+    <span class="kw">try</span>:
+        <span class="cmt">#click(coord)
+</span>        <span class="skw">click</span>(coord.targetOffset(baseOffset_x + dx, baseOffset_y + dy))
+        WriteLog(<span class="str">"Нажат объект для способности q"</span>)
+    <span class="kw">except</span>:
+        <span class="cmt">#click(Location(round(Reg.getW()/2), round(Reg.getH()/2)))
+</span>        randomRegionClick(Reg, max_dx, max_dy)
+        WriteLog(<span class="str">"Ошибка. Нажаты координаты по умолчанию"</span>)
+        <span class="kw">pass</span>
+    <span class="skw">sleep</span>(<span class="dig">0.5</span>)
+    dx = random.randrange(-max_dx, max_dx)
+    dy = random.randrange(-max_dy, max_dy)
+    KeyPress(<span class="str">"w"</span>)
+    <span class="kw">try</span>:
+        <span class="skw">click</span>(coord.targetOffset(baseOffset_x + dx, baseOffset_y + dy))
+        WriteLog(<span class="str">"Нажат объект для способности w"</span>)
+    <span class="kw">except</span>:
+        <span class="cmt">#click(Location(521, 403))
+</span>        <span class="cmt">#randomLocationClick(round(Reg.getW()/2), round(Reg.getH()/2), max_dx, max_dy)
+</span>        randomRegionClick(Reg, max_dx, max_dy)
+        WriteLog(<span class="str">"Ошибка. Нажаты координаты по умолчанию"</span>)
+        <span class="kw">pass</span>
+    <span class="skw">sleep</span>(<span class="dig">0.5</span>)
+    dx = random.randrange(-max_dx, max_dx)
+    dy = random.randrange(-max_dy, max_dy)
+    KeyPress(<span class="str">"e"</span>)
+    <span class="kw">try</span>:
+        <span class="skw">click</span>(coord.targetOffset(baseOffset_x + dx, baseOffset_y + dy))
+        WriteLog(<span class="str">"Нажат объект для способности e"</span>)
+    <span class="kw">except</span>:
+        randomRegionClick(Reg, max_dx, max_dy)
+        WriteLog(<span class="str">"Ошибка. Нажаты координаты по умолчанию"</span>)
+        <span class="kw">pass</span>
+    <span class="skw">sleep</span>(<span class="dig">0.5</span>)
+    dx = random.randrange(-max_dx, max_dx)
+    dy = random.randrange(-max_dy, max_dy)
+    KeyPress(<span class="str">"r"</span>)
+    <span class="kw">try</span>:
+        <span class="skw">click</span>(coord.targetOffset(baseOffset_x + dx, baseOffset_y + dy))
+        WriteLog(<span class="str">"Нажат объект для способности r"</span>)
+    <span class="kw">except</span>:
+        randomRegionClick(Reg, max_dx, max_dy)
+        WriteLog(<span class="str">"Ошибка. Нажаты координаты по умолчанию"</span>)
+        <span class="kw">pass</span>
+    <span class="skw">sleep</span>(<span class="dig">0.5</span>)
+    keyUp()
+    WriteLog(<span class="str">"Конец использования способностей"</span>)
+
+<span class="kw">def</span> CheckBots(HOTS):
+    WriteLog(<span class="str">"Проверка ботов"</span>)
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460728184588.png" />).similar(<span class="dig">0.98</span>)):
+        <span class="skw">click</span>(Pattern(<img src="1460728184588.png" />).similar(<span class="dig">0.98</span>).targetOffset(-<span class="dig">45</span>,-<span class="dig">1</span>))
+        WriteLog(<span class="str">"Поставлены союзники ИИ"</span>)
+    <span class="kw">if</span> <span class="kw">not</span> HOTS.exists(Pattern(<img src="1460728073758.png" />).similar(<span class="dig">0.90</span>)):
+        randomClick(Pattern(<img src="1460728073758.png" />).similar(<span class="dig">0.75</span>), <span class="dig">106</span>, <span class="dig">9</span>)
+        randomClick(Pattern(<img src="1460728293641.png" />).similar(<span class="dig">0.95</span>), <span class="dig">54</span>, <span class="dig">5</span>)
+        WriteLog(<span class="str">"Выбрана сложность Новичок"</span>)
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1462033144228.png" />).similar(<span class="dig">0.90</span>)):
+        WriteLog(<span class="str">"Текущая сложность Адепт. Меняю сложность"</span>)
+        randomClick(Pattern(<img src="1462033144228.png" />).similar(<span class="dig">0.90</span>), <span class="dig">106</span>, <span class="dig">9</span>)
+        randomClick(Pattern(<img src="1460728293641.png" />).similar(<span class="dig">0.95</span>), <span class="dig">54</span>, <span class="dig">5</span>)
+        WriteLog(<span class="str">"Выбрана сложность Новичок"</span>)
+    WriteLog(<span class="str">"Конец проверки ботов"</span>)
+
+<span class="kw">def</span> UpdateGameMode():
+    <span class="skw">sleep</span>(<span class="dig">2</span>)
+    randomClick(Pattern(<img src="1460728920454.png" />).similar(<span class="dig">0.80</span>), <span class="dig">36</span>, <span class="dig">3</span>)
+    <span class="skw">sleep</span>(<span class="dig">2</span>)
+    randomClick(Pattern(<img src="1460728957178.png" />).similar(<span class="dig">0.80</span>), <span class="dig">34</span>, <span class="dig">4</span>)
+    <span class="skw">sleep</span>(<span class="dig">2</span>)
+
+<span class="kw">def</span> LogIn():
+    WriteLog(<span class="str">"Начало авторизации"</span>)
+    <span class="kw">try</span>:
+        HOTS.<span class="skw">wait</span>(Pattern(<img src="1460727608234.png" />).similar(<span class="dig">0.85</span>), timeWait)
+        paste(Pattern(<img src="1460727608234.png" />).similar(<span class="dig">0.85</span>), LogInPass)
+        WriteLog(<span class="str">"Введён пароль"</span>)
+        randomClick(Pattern(<img src="1460727730727.png" />).similar(<span class="dig">0.80</span>), <span class="dig">56</span>, <span class="dig">10</span>)
+        WriteLog(<span class="str">"Подключение"</span>)
+        <span class="skw">sleep</span>(<span class="dig">6</span>)
+        <span class="kw">if</span> HOTS.exists(Pattern(<img src="1461733261130.png" />).similar(<span class="dig">0.85</span>)):
+            WriteLog(<span class="str">"Переподключение к игре"</span>)
+            <span class="skw">click</span>(Pattern(<img src="1461733272455.png" />).similar(<span class="dig">0.85</span>))
+            <span class="kw">return</span>
+        <span class="kw">if</span> HOTS.exists(Pattern(<img src="1461074599787.png" />).similar(<span class="dig">0.85</span>)):
+            WriteLog(<span class="str">"Несовпадение версий. Выхожу из игры"</span>)
+            randomClick(Pattern(<img src="1461074621210.png" />).similar(<span class="dig">0.85</span>), <span class="dig">56</span>, <span class="dig">9</span>)
+            randomClick(Pattern(<img src="1461074675595.png" />).similar(<span class="dig">0.85</span>), <span class="dig">56</span>, <span class="dig">9</span>)
+        HOTS.<span class="skw">wait</span>(Pattern(<img src="1460727826217.png" />).similar(<span class="dig">0.85</span>), timeWait)
+        WriteLog(<span class="str">"Подключение успешно"</span>)
+        <span class="skw">click</span>(Pattern(<img src="1460727826217.png" />).similar(<span class="dig">0.85</span>).targetOffset(<span class="dig">137</span>,-<span class="dig">4</span>))
+        UpdateGameMode()
+    <span class="kw">except</span>:
+        WriteLog(<span class="str">"Ошибка при авторизации"</span>)
+        <span class="kw">pass</span>
+    WriteLog(<span class="str">"Конец авторизации"</span>)
+
+<span class="kw">def</span> SelectMap():
+    WriteLog(<span class="str">"Начало выбора карты"</span>)
+    Map = <span class="str">"Карта не определена"</span>
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460730752977.png" />).exact()):
+        Map = Map1
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460730845585.png" />).exact()):
+        Map = Map2
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460730927513.png" />).exact()):
+        Map = Map3
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460731008716.png" />).exact()):
+        Map = Map4
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460731069343.png" />).exact()):
+        Map = Map5
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460731136221.png" />).exact()):
+        Map = Map6
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460731199310.png" />).exact()):
+        Map = Map7
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460729301600.png" />).exact()):
+        Map = Map8
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460731273230.png" />).exact()):
+        Map = Map9
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460731330733.png" />).exact()):
+        Map = Map10
+    WriteLog(<span class="str">"Конец выбора карты"</span>)
+    <span class="kw">return</span> Map
+
+<span class="kw">def</span> takeScreenshot(Reg):
+    <span class="kw">try</span>:
+        img = <span class="skw">capture</span>(Reg) <span class="cmt"># img is an image file .png in temp folder now</span>
+        ScreenshotFileName = <span class="str">"Sikuli_HOTS_Log_"</span> + datetime.strftime(datetime.now(), <span class="str">"%Y.%m.%d %H_%M_%S"</span>) + <img src=".png" />
+        shutil.move(img, ScreenshotFilePath + ScreenshotFileName) <span class="cmt"># the target directory must exist</span>
+        <span class="kw">return</span> ScreenshotFilePath + ScreenshotFileName
+    <span class="kw">except</span>:
+        <span class="kw">return</span> <span class="str">"Снимок экрана не удался"</span>
+
+<span class="kw">def</span> StartFromDesktop():
+    WriteLog(<span class="str">"Запускаю HOTS через ярлык"</span>)
+    <span class="kw">if</span> exists(Pattern(<img src="1461735092731.png" />).similar(<span class="dig">0.85</span>)):
+        <span class="skw">doubleClick</span>(Pattern(<img src="1461735092731.png" />).similar(<span class="dig">0.85</span>))
+        WriteLog(<span class="str">"HOTS запущена через ярлык"</span>)
+    WriteLog(<span class="str">"HOTS не запущена через ярлык"</span>)
+
+<span class="kw">def</span> CheckHP(HOTS, x, y, max_dx, max_dy):
+    <span class="cmt">#Pattern("1462037768486.png").similar(0.97)
+</span>    result = False
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1462548602593.png" />).similar(<span class="dig">0.97</span>)):
+        WriteLog(<span class="str">"Мало жизней. Телепортация на базу"</span>)
+        <span class="cmt">#rightClick(HeroPos)
+</span>        randomLocationRightClick(x, y, max_dx, max_dy)
+        <span class="skw">sleep</span>(<span class="dig">3</span>)
+        KeyPress(<span class="str">"b"</span>)
+        <span class="skw">sleep</span>(<span class="dig">6.5</span>)
+        result = True
+    <span class="kw">return</span> result
+
+<span class="kw">def</span> UseSkillOnUnits(HOTS, img):
+    units = []
+    <span class="kw">try</span>:
+        f = HOTS.findAll(img)
+    <span class="kw">except</span>:
+        <span class="kw">return</span>
+    <span class="kw">while</span> f.hasNext(): <span class="cmt"># loop as long there is a first and more matches</span>
+        units.append(f.next())        <span class="cmt"># access next match and add to matches</span>
+    <span class="kw">if</span> len(units) &gt; <span class="dig">0</span>:
+        WriteLog(<span class="str">"Найдены юниты: "</span> + str(len(units)))
+        <span class="kw">try</span>:
+            <span class="skw">rightClick</span>(img)
+            <span class="skw">sleep</span>(<span class="dig">2</span>)
+            UseSkill(HOTS, img, <span class="dig">0</span>, <span class="dig">47</span>)
+        <span class="kw">except</span>:
+            UseSkill(HOTS, img, <span class="dig">0</span>, <span class="dig">47</span>)
+            <span class="kw">pass</span>
+
+<span class="kw">def</span> ExitFromGameAndBot():
+    WriteLog(<span class="str">"Выход из игры"</span>)
+    randomClick(Pattern(<img src="1460372522086.png" />).similar(<span class="dig">0.85</span>), <span class="dig">30</span>, <span class="dig">14</span>)
+    <span class="skw">sleep</span>(<span class="dig">2</span>)
+    randomClick(Pattern(<img src="1460798201925.png" />).similar(<span class="dig">0.85</span>), <span class="dig">10</span>, <span class="dig">12</span>)
+    <span class="skw">sleep</span>(<span class="dig">1</span>)
+    randomClick(Pattern(<img src="1460798241017.png" />).similar(<span class="dig">0.75</span>), <span class="dig">66</span>, <span class="dig">10</span>)
+    WriteLog(<span class="str">"Выход из программы"</span>)
+    exit()
+
+<span class="kw">def</span> FindSelf(HOTS, HOTS_map):
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1462508486661.png" />).similar(<span class="dig">0.85</span>)): <span class="cmt">#Найден бокс с положением героя на карте</span>
+        <span class="kw">try</span>:
+            HeroPos = HOTS.<span class="skw">find</span>(Pattern(<img src="1462508486661.png" />).similar(<span class="dig">0.85</span>).targetOffset(<span class="dig">0</span>,<span class="dig">17</span>))
+            hover(HeroPos)
+            WriteLog(<span class="str">"Найдена позиция героя: "</span> + HeroPos)
+            <span class="kw">return</span> HeroPos
+        <span class="kw">except</span>:
+            HeroPos = Location(round(HOTS_map.getW()/<span class="dig">2</span>), round(HOTS_map.getH()/<span class="dig">2</span>))
+            <span class="kw">return</span> HeroPos
+            <span class="kw">pass</span>
+
+<span class="kw">def</span> FindSelfAndSleep(HOTS, HOTS_map, sleepTime):
+    HeroPos = FindSelf(HOTS, HOTS_map)
+    <span class="cmt">#randomLocationRightClick(HeroPos.x, HeroPos.y, 8, 8)
+</span>    <span class="cmt">#randomLocationClick(round(Reg.getW()/2), round(Reg.getH()/2), max_dx, max_dy)
+</span>    <span class="skw">sleep</span>(sleepTime)
+    <span class="kw">return</span> HeroPos
+
+<span class="kw">def</span> DeathClick():
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1462550194244.png" />).similar(<span class="dig">0.80</span>)):
+        <span class="kw">try</span>:
+            randomClick(Pattern(<img src="1462550247258.png" />).similar(<span class="dig">0.90</span>), <span class="dig">6</span>, <span class="dig">7</span>)
+        <span class="kw">except</span>:
+            <span class="kw">pass</span>
+
+WriteLog(<span class="str">"Начало"</span>)
+
+
+HOTS = Region(<span class="dig">4</span>,<span class="dig">22</span>,<span class="dig">1030</span>,<span class="dig">728</span>)
+
+
+HeroPos = Location(defMidLoc_x, defMidLoc_y)
+
+<span class="kw">if</span> <span class="kw">not</span> (HOTS.exists(Pattern(<img src="1460380966426.png" />).targetOffset(-<span class="dig">61</span>,-<span class="dig">5</span>)) <span class="kw">or</span> HOTS.exists(Pattern(<img src="1460379321998.png" />).similar(<span class="dig">0.85</span>))):
+    WriteLog(<span class="str">"HOTS не запущена до главного цикла. Запускаю"</span>)
+    StartFromDesktop()
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460727608234.png" />).similar(<span class="dig">0.85</span>), timeWait):
+        LogIn()
+
+<span class="kw">while</span> True:
+    WhileRepeat += <span class="dig">1</span>
+    WriteLog(<span class="str">"Цикл: "</span> + str(WhileRepeat))
+    <span class="skw">sleep</span>(<span class="dig">1</span>)
+    <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460379321998.png" />).similar(<span class="dig">0.85</span>)):
+        <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460959014502.png" />).similar(<span class="dig">0.85</span>)):
+            UpdateGameMode()
+
+        <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460372223956.png" />).similar(<span class="dig">0.85</span>)):
+            WriteLog(<span class="str">"Найдена кнопка начать игру"</span>)
+            <span class="kw">try</span>:
+                CheckBots(HOTS)
+                randomClick(Pattern(<img src="1460372223956.png" />).similar(<span class="dig">0.85</span>), <span class="dig">84</span>, <span class="dig">14</span>)
+                GameCount += <span class="dig">1</span>
+                WriteLog(<span class="str">"Нажата кнопка начать игру. Игра: "</span> + str(GameCount))
+                <span class="skw">sleep</span>(<span class="dig">7</span>)
+                CurrentMap = SelectMap()
+                WriteLog(str(WhileRepeat) + <span class="str">"\t"</span> + <span class="str">"Карта: "</span> + CurrentMap + <span class="str">"\t"</span> + str(GameCount))
+            <span class="kw">except</span>:
+                WriteLog(<span class="str">"Не удалось нажать на начало игры. Нажимаю координатами"</span>)
+                randomLocationClick(<span class="dig">515</span>, <span class="dig">695</span>, <span class="dig">14</span>, <span class="dig">14</span>)
+                <span class="kw">pass</span>
+
+        <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460798017005.png" />).similar(<span class="dig">0.85</span>)):
+            WriteLog(<span class="str">"Кончились доступные игры"</span>)
+            <span class="skw">click</span>(Pattern(<img src="1460798017005.png" />).similar(<span class="dig">0.85</span>).targetOffset(<span class="dig">1</span>,<span class="dig">93</span>))
+            <span class="skw">sleep</span>(<span class="dig">2</span>)
+            ExitFromGameAndBot()
+        <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460372522086.png" />).similar(<span class="dig">0.85</span>)):
+            <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460732413254.png" />).similar(<span class="dig">0.85</span>)):
+                WriteLog(<span class="str">"Матч не закончен. Выкинуло из игры"</span>)
+            <span class="kw">else</span>:
+                WriteLog(<span class="str">"Матч закончен успешно."</span>)
+                <span class="kw">if</span> HOTS.exists(Pattern(<img src="1461916973790.png" />).similar(<span class="dig">0.85</span>)):
+                    WriteLog(<span class="str">"Результат:\t"</span> + <span class="str">"Победа"</span>)
+                <span class="kw">else</span>:
+                    WriteLog(<span class="str">"Результат:\t"</span> + <span class="str">"Поражение"</span>)
+
+                <span class="kw">try</span>:
+                    hover(Pattern(<img src="1461044643637.png" />).similar(<span class="dig">0.85</span>))
+                    <span class="skw">sleep</span>(<span class="dig">1</span>)
+                    WriteLog(<span class="str">"Сделан снимок сводки: "</span> + takeScreenshot(HOTS))
+                    randomClick(Pattern(<img src="1461044021289.png" />).similar(<span class="dig">0.85</span>), <span class="dig">33</span>, <span class="dig">4</span>)
+                    <span class="skw">sleep</span>(<span class="dig">2</span>)
+                    WriteLog(<span class="str">"Сделан снимок статистики: "</span> + takeScreenshot(HOTS))
+                <span class="kw">except</span>:
+                    WriteLog(<span class="str">"Не удалось сделать снимки статистики"</span>)
+                    <span class="kw">pass</span>
+
+            WriteLog(<span class="str">"Найдена кнопка выйти из сражения"</span>)
+            randomClick(Pattern(<img src="1460372522086.png" />).similar(<span class="dig">0.85</span>), <span class="dig">56</span>, <span class="dig">14</span>)
+            WriteLog(<span class="str">"Нажата кнопка выйти из сражения"</span>)
+            <span class="kw">if</span> GameCount == <span class="dig">5</span>:
+                WriteLog(<span class="str">"Закончилась "</span> + str(GameCount) + <span class="str">" игра. Перезагружаюсь"</span>)
+                ExitFromGameAndBot()
+    <span class="kw">else</span>:
+        <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460388929682.png" />).similar(<span class="dig">0.98</span>)):
+            WriteLog(<span class="str">"Найдена кнопка сесть на лошадь"</span>)
+            <span class="kw">try</span>:
+                <span class="skw">click</span>(Pattern(<img src="1460388929682.png" />).similar(<span class="dig">0.98</span>))
+                WriteLog(<span class="str">"Нажата кнопка на сесть на лошадь"</span>)
+                <span class="skw">sleep</span>(<span class="dig">1.2</span>)
+            <span class="kw">except</span>:
+                <span class="cmt">#randomLocationClick(521, 403, 1, 1)
+</span>                KeyPress(<span class="str">"z"</span>)
+                WriteLog(<span class="str">"Ошибка. Нажаты координаты по умолчанию"</span>)
+                <span class="kw">pass</span>
+        <span class="kw">if</span> CheckHP(HOTS, defMidLoc_x, defMidLoc_y, <span class="dig">8</span>, <span class="dig">8</span>):
+            <span class="kw">continue</span>
+        <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460386418697.png" />).similar(<span class="dig">0.87</span>)):
+            WriteLog(<span class="str">"Найдена башня 1"</span>)
+            KeyPress(<span class="str">"a"</span>)
+            <span class="kw">try</span>:
+                randomClick(Pattern(<img src="1460386418697.png" />).similar(<span class="dig">0.87</span>), <span class="dig">6</span>, <span class="dig">9</span>)
+                WriteLog(<span class="str">"Нажата кнопка на башне 1"</span>)
+                <span class="skw">sleep</span>(sleepTime)
+            <span class="kw">except</span>:
+                <span class="cmt">#randomLocationClick(defLoc_x, defLoc_y, defLoc_dx, defLoc_dy)
+</span>                <span class="cmt">#randomLocationClick(round(HOTS.getW()/2), round(HOTS.getH()/2), defLoc_dx, defLoc_dy)
+</span>                <span class="cmt">#randomRegionClick(HOTS_map, defMidLoc_dx, defMidLoc_dy)
+</span>                randomLocationClick(defMidLoc_x, defMidLoc_y, defMidLoc_dx, defMidLoc_dy)
+                WriteLog(<span class="str">"Ошибка. Нажаты координаты на карте по умолчанию"</span>)
+                <span class="kw">pass</span>
+            <span class="cmt">#UseSkill()
+</span>            <span class="cmt">#KeyPress("z")
+</span>        <span class="kw">elif</span> HOTS.exists(Pattern(<img src="1460625663740.png" />).similar(<span class="dig">0.73</span>)):
+            WriteLog(<span class="str">"Найдена башня 2"</span>)
+            KeyPress(<span class="str">"a"</span>)
+            <span class="kw">try</span>:
+                randomClick(Pattern(<img src="1460625663740.png" />).similar(<span class="dig">0.73</span>), <span class="dig">6</span>, <span class="dig">9</span>)
+                WriteLog(<span class="str">"Нажата кнопка на башне 2"</span>)
+                <span class="skw">sleep</span>(sleepTime)
+            <span class="kw">except</span>:
+                <span class="cmt">#randomRegionClick(HOTS_map, defMidLoc_dx, defMidLoc_dy)
+</span>                randomLocationClick(defMidLoc_x, defMidLoc_y, defMidLoc_dx, defMidLoc_dy)
+                WriteLog(<span class="str">"Ошибка. Нажаты координаты на карте по умолчанию"</span>)
+                <span class="kw">pass</span>
+        <span class="kw">elif</span> HOTS.exists(Pattern(<img src="1460386592585.png" />).similar(<span class="dig">0.85</span>)):
+            WriteLog(<span class="str">"Найдена цитадель с соответствием 85"</span>)
+            KeyPress(<span class="str">"a"</span>)
+            <span class="kw">try</span>:
+                randomClick(Pattern(<img src="1460386592585.png" />).similar(<span class="dig">0.85</span>), <span class="dig">12</span>, <span class="dig">10</span>)
+                WriteLog(<span class="str">"Нажата кнопка на цитадели с соответствием 85"</span>)
+                <span class="skw">sleep</span>(sleepTime)
+            <span class="kw">except</span>:
+                randomLocationClick(defMidLoc_x, defMidLoc_y, defMidLoc_dx, defMidLoc_dy)
+                WriteLog(<span class="str">"Ошибка. Нажаты координаты на карте по умолчанию"</span>)
+                <span class="kw">pass</span>
+
+        <span class="kw">elif</span> HOTS.exists(Pattern(<img src="1460625702443.png" />).similar(<span class="dig">0.75</span>)):
+            WriteLog(<span class="str">"Найдена цитадель с соответствием 75"</span>)
+            KeyPress(<span class="str">"a"</span>)
+            <span class="kw">try</span>:
+                randomClick(Pattern(<img src="1460625702443.png" />).similar(<span class="dig">0.75</span>), <span class="dig">12</span>, <span class="dig">10</span>)
+                WriteLog(<span class="str">"Нажата кнопка на цитадели с соответствием 75"</span>)
+                <span class="skw">sleep</span>(sleepTime)
+            <span class="kw">except</span>:
+                <span class="cmt">#randomLocationClick(defLoc_x, defLoc_y, defLoc_dx, defLoc_dy)
+</span>                randomLocationClick(defMidLoc_x, defMidLoc_y, defMidLoc_dx, defMidLoc_dy)
+                WriteLog(<span class="str">"Ошибка. Нажаты координаты на карте по умолчанию"</span>)
+                <span class="kw">pass</span>
+        <span class="kw">elif</span> HOTS.exists(Pattern(<img src="1462549278874.png" />).similar(<span class="dig">0.87</span>)):
+            WriteLog(<span class="str">"Найден вражеский фонтан 1 с соответствием 87"</span>)
+            KeyPress(<span class="str">"a"</span>)
+            <span class="kw">try</span>:
+                randomClick(Pattern(<img src="1462549278874.png" />).similar(<span class="dig">0.87</span>), <span class="dig">5</span>, <span class="dig">7</span>)
+                WriteLog(<span class="str">"Нажат вражеский фонтан 1 с соответствием 87"</span>)
+                <span class="skw">sleep</span>(sleepTime)
+            <span class="kw">except</span>:
+                randomLocationClick(defMidLoc_x, defMidLoc_y, defMidLoc_dx, defMidLoc_dy)
+                WriteLog(<span class="str">"Ошибка. Нажаты координаты на карте по умолчанию"</span>)
+                <span class="kw">pass</span>
+        <span class="kw">elif</span> HOTS.exists(Pattern(<img src="1462550591301.png" />).similar(<span class="dig">0.88</span>)):
+            WriteLog(<span class="str">"Найден вражеский фонтан 2 с соответствием 88"</span>)
+            KeyPress(<span class="str">"a"</span>)
+            <span class="kw">try</span>:
+                randomClick(Pattern(<img src="1462550591301.png" />).similar(<span class="dig">0.88</span>), <span class="dig">4</span>, <span class="dig">5</span>)
+                WriteLog(<span class="str">"Нажат вражеский фонтан 2 с соответствием 88"</span>)
+                <span class="skw">sleep</span>(sleepTime)
+            <span class="kw">except</span>:
+                randomLocationClick(defMidLoc_x, defMidLoc_y, defMidLoc_dx, defMidLoc_dy)
+                WriteLog(<span class="str">"Ошибка. Нажаты координаты на карте по умолчанию"</span>)
+                <span class="kw">pass</span>
+        <span class="kw">else</span>:
+            WriteLog(<span class="str">"Не найдено объектов. Иду в цент карты."</span>)
+            KeyPress(<span class="str">"a"</span>)
+            <span class="kw">try</span>:
+                randomLocationClick(defMidLoc_x, defMidLoc_y, defMidLoc_dx, defMidLoc_dy)
+                <span class="skw">sleep</span>(sleepTime)
+            <span class="kw">except</span>:
+                randomRegionClick(HOTS, defLoc_dx, defLoc_dy)
+                WriteLog(<span class="str">"Ошибка. Нажаты координаты центра окна по умолчанию"</span>)
+                <span class="kw">pass</span>
+            <span class="kw">continue</span>
+        <span class="cmt">#if WhileRepeat % 1 == 0: 
+</span>            <span class="cmt">#HeroPos = FindSelf(HOTS)
+</span>        <span class="kw">while</span> HOTS.exists(Pattern(<img src="1460625792087.png" />).similar(<span class="dig">0.94</span>).targetOffset(<span class="dig">31</span>,<span class="dig">87</span>)):
+            WriteLog(<span class="str">"Найдены жизни врага"</span>)
+            UseSkill(HOTS, Pattern(<img src="1460625792087.png" />).similar(<span class="dig">0.94</span>), <span class="dig">28</span>, <span class="dig">68</span>)
+        <span class="kw">while</span> HOTS.exists(Pattern(<img src="1460626025154.png" />).similar(<span class="dig">0.85</span>).targetOffset(<span class="dig">31</span>,<span class="dig">88</span>)):
+            WriteLog(<span class="str">"Найдены жизни башни"</span>)
+            UseSkill(HOTS, Pattern(<img src="1460626025154.png" />).similar(<span class="dig">0.93</span>), <span class="dig">33</span>, <span class="dig">145</span>)
+        <span class="kw">while</span> HOTS.exists(Pattern(<img src="1462481496303.png" />).similar(<span class="dig">0.80</span>)):
+            UseSkillOnUnits(HOTS, Pattern(<img src="1462481496303.png" />).similar(<span class="dig">0.80</span>))
+
+
+        <span class="kw">if</span> WhileRepeat % <span class="dig">10</span> == <span class="dig">0</span>:
+            <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460625999994.png" />).similar(<span class="dig">0.85</span>)):
+                WriteLog(<span class="str">"Найдена кнопка закрытия окна"</span>)
+                <span class="kw">try</span>:
+                    randomClick(Pattern(<img src="1460625999994.png" />).similar(<span class="dig">0.85</span>), <span class="dig">6</span>, <span class="dig">3</span>)
+                    WriteLog(<span class="str">"Нажата кнопка закрытия окна"</span>)
+                <span class="kw">except</span>:
+                    <span class="skw">type</span>(Key.TAB)
+                    WriteLog(<span class="str">"Ошибка. Нажата кнопка TAB"</span>)
+                    <span class="kw">pass</span>
+        <span class="kw">if</span> HOTS.exists(<img src="1460382029325.png" />):
+            WriteLog(<span class="str">"Найден новый талант"</span>)
+            <span class="kw">if</span> HOTS.exists(<img src="1460380202682.png" />):
+                WriteLog(<span class="str">"Найдено сообщение с выбором таланта"</span>)
+                <span class="skw">click</span>(Pattern(<img src="1460380966426.png" />).targetOffset(-<span class="dig">61</span>,-<span class="dig">5</span>))
+                <span class="skw">click</span>(Pattern(<img src="1460381094880.png" />).targetOffset(-<span class="dig">6</span>,-<span class="dig">349</span>))
+                <span class="skw">click</span>(Pattern(<img src="1460381094880.png" />).targetOffset(-<span class="dig">6</span>,-<span class="dig">300</span>))
+                <span class="skw">click</span>(Pattern(<img src="1460381094880.png" />).targetOffset(-<span class="dig">4</span>,-<span class="dig">248</span>))
+                <span class="skw">click</span>(Pattern(<img src="1460381094880.png" />).targetOffset(-<span class="dig">5</span>,-<span class="dig">198</span>))
+                WriteLog(<span class="str">"Выбран талант из сообщения с выбором таланта"</span>)
+            <span class="kw">else</span>:
+                <span class="skw">click</span>(Pattern(<img src="1460381094880.png" />).targetOffset(-<span class="dig">6</span>,-<span class="dig">349</span>))
+                <span class="skw">click</span>(Pattern(<img src="1460381094880.png" />).targetOffset(-<span class="dig">6</span>,-<span class="dig">300</span>))
+                <span class="skw">click</span>(Pattern(<img src="1460381094880.png" />).targetOffset(-<span class="dig">4</span>,-<span class="dig">248</span>))
+                <span class="skw">click</span>(Pattern(<img src="1460381094880.png" />).targetOffset(-<span class="dig">5</span>,-<span class="dig">198</span>))
+                WriteLog(<span class="str">"Выбран новый талант"</span>)
+    <span class="kw">if</span> WhileRepeat % <span class="dig">25</span> == <span class="dig">0</span>:
+        <span class="kw">if</span> HOTS.exists(Pattern(<img src="1461918637455.png" />).similar(<span class="dig">0.85</span>)):
+            <span class="skw">click</span>(Pattern(<img src="1461918637455.png" />).similar(<span class="dig">0.85</span>).targetOffset(<span class="dig">91</span>,<span class="dig">0</span>))
+            UpdateGameMode()
+
+        <span class="kw">if</span> exists(Pattern(<img src="1461734966847.png" />).similar(<span class="dig">0.95</span>)):
+            WriteLog(<span class="str">"HOTS вылетела"</span>)
+            <span class="skw">click</span>(Pattern(<img src="1461734966847.png" />).similar(<span class="dig">0.95</span>))
+            <span class="skw">sleep</span>(<span class="dig">5</span>)
+            StartFromDesktop()
+
+        <span class="kw">if</span> exists(<img src="1461074157680.png" />):
+            WriteLog(<span class="str">"HOTS вылетела с ошибкой"</span>)
+            <span class="kw">try</span>:
+                <span class="kw">if</span> HOTS.exists(Pattern(<img src="1461940154596.png" />).similar(<span class="dig">0.85</span>)):
+                    WriteLog(<span class="str">"Неизвестная ошибка. Переустановите игру"</span>)
+                <span class="kw">if</span> HOTS.exists(Pattern(<img src="1460727456762.png" />).similar(<span class="dig">0.80</span>)):
+                    WriteLog(<span class="str">"Непредусмотрительная фатальная ошибка"</span>)
+                <span class="kw">if</span> HOTS.exists(Pattern(<img src="1461074233727.png" />).similar(<span class="dig">0.80</span>)):
+                    WriteLog(<span class="str">"Ядро: попытка расширить, перегруппировать или освободить неизвестный блок памяти"</span>)
+            <span class="kw">except</span>:
+                <span class="kw">pass</span>
+            <span class="kw">if</span> exists(Pattern(<img src="1460727491914.png" />).similar(<span class="dig">0.97</span>).targetOffset(-<span class="dig">63</span>,<span class="dig">0</span>)):
+                <span class="skw">click</span>(Pattern(<img src="1460727491914.png" />).similar(<span class="dig">0.97</span>).targetOffset(-<span class="dig">63</span>,<span class="dig">0</span>))
+            WriteLog(<span class="str">"Перезапуск игры"</span>)
+            <span class="skw">click</span>(<img src="1460727557766.png" />)
+            LogIn()
+        <span class="kw">elif</span> exists(Pattern(<img src="1461735092731.png" />).similar(<span class="dig">0.85</span>)):
+            WriteLog(<span class="str">"Найден ярлык на рабочем столе"</span>)
+            StartFromDesktop()
+</pre>
+</body>
+</html>
